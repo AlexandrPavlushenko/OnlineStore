@@ -1,0 +1,119 @@
+[
+{
+    "model": "catalog.product",
+    "pk": 1,
+    "fields": {
+        "name": "Intel Core i3-12100F BOX",
+        "description": "LGA 1700, 4 x 3.3 ГГц, L2 - 5 МБ, L3 - 12 МБ, 2 х DDR4, DDR5-4800 МГц, TDP 89 Вт, кулер",
+        "image": "img1_1.jpg",
+        "category": 1,
+        "price": 10399,
+        "created_at": "2024-10-28T22:30:55.962Z",
+        "updated_at": "2024-10-28T22:30:55.962Z"
+    }
+},
+{
+    "model": "catalog.product",
+    "pk": 2,
+    "fields": {
+        "name": "Intel Core i5-12400F BOX",
+        "description": "LGA 1700, 6 x 2.5 ГГц, L2 - 7.5 МБ, L3 - 18 МБ, 2 х DDR4, DDR5-4800 МГц, TDP 117 Вт, кулер",
+        "image": "img1_2.jpg",
+        "category": 1,
+        "price": 14999,
+        "created_at": "2024-10-28T20:57:54.388Z",
+        "updated_at": "2024-10-28T20:57:54.388Z"
+    }
+},
+{
+    "model": "catalog.product",
+    "pk": 3,
+    "fields": {
+        "name": "Intel Core i7-12700F BOX",
+        "description": "LGA 1700, 8P x 2.1 ГГц, 4E x 1.6 ГГц, L2 - 12 МБ, L3 - 25 МБ, 2 х DDR4, DDR5-4800 МГц, TDP 180 Вт, кулер",
+        "image": "img1_3.jpg",
+        "category": 1,
+        "price": 31499,
+        "created_at": "2024-10-28T20:58:48.191Z",
+        "updated_at": "2024-10-28T20:58:48.191Z"
+    }
+},
+{
+    "model": "catalog.product",
+    "pk": 4,
+    "fields": {
+        "name": "ASUS TUF GAMING B760M-PLUS II",
+        "description": "LGA 1700, Intel B760, 4xDDR5-5600 МГц, 1xPCI-Ex16, 3xM.2, Micro-ATX",
+        "image": "img2_1.jpg",
+        "category": 2,
+        "price": 25199,
+        "created_at": "2024-10-28T21:05:58.942Z",
+        "updated_at": "2024-10-28T21:05:58.942Z"
+    }
+},
+{
+    "model": "catalog.product",
+    "pk": 5,
+    "fields": {
+        "name": "ASUS ProArt B760-CREATOR",
+        "description": "LGA 1700, Intel B760, 4xDDR5-4800 МГц, 2xPCI-Ex16, 3xM.2, Standard-ATX",
+        "image": "img2_2.jpg",
+        "category": 2,
+        "price": 28699,
+        "created_at": "2024-10-28T21:09:42.676Z",
+        "updated_at": "2024-10-28T21:09:42.676Z"
+    }
+},
+{
+    "model": "catalog.product",
+    "pk": 6,
+    "fields": {
+        "name": "ASUS ROG STRIX Z790-H GAMING WIFI",
+        "description": "LGA 1700, Intel Z790, 4xDDR5-5600 МГц, 2xPCI-Ex16, 4xM.2, Standard-ATX",
+        "image": "img2_3.jpg",
+        "category": 2,
+        "price": 37999,
+        "created_at": "2024-10-28T21:13:38.805Z",
+        "updated_at": "2024-10-28T21:13:38.805Z"
+    }
+},
+{
+    "model": "catalog.product",
+    "pk": 7,
+    "fields": {
+        "name": "ASUS GeForce RTX 4070 SUPER ProArt OC Edition",
+        "description": "PCIe 4.0 12 ГБ GDDR6X, 192 бит, 3 x DisplayPort, HDMI, GPU 1980 МГц",
+        "image": "img3_1.jpg",
+        "category": 3,
+        "price": 88999,
+        "created_at": "2024-10-28T21:22:33.238Z",
+        "updated_at": "2024-10-28T21:22:33.238Z"
+    }
+},
+{
+    "model": "catalog.product",
+    "pk": 8,
+    "fields": {
+        "name": "ASUS GeForce RTX 4070 Ti ProArt OC Edition",
+        "description": "PCIe 4.0 12 ГБ GDDR6X, 192 бит, 3 x DisplayPort, HDMI, GPU 2310 МГц",
+        "image": "img3_2.jpg",
+        "category": 3,
+        "price": 94999,
+        "created_at": "2024-10-28T21:25:45.137Z",
+        "updated_at": "2024-10-28T21:25:45.137Z"
+    }
+},
+{
+    "model": "catalog.product",
+    "pk": 9,
+    "fields": {
+        "name": "Видеокарта ASUS GeForce RTX 4070 Ti SUPER ROG Strix OC Edition",
+        "description": "PCIe 4.0 16 ГБ GDDR6X, 256 бит, 2 x HDMI, 3 x DisplayPort, GPU 2340 МГц",
+        "image": "img3_3.jpg",
+        "category": 3,
+        "price": 141499,
+        "created_at": "2024-10-28T21:29:35.419Z",
+        "updated_at": "2024-10-28T21:29:35.419Z"
+    }
+}
+]
