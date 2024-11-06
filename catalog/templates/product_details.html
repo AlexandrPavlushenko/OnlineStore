@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+    <h2 class="display-4">Товар #{{ product.pk }}</h2>
+</div>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-4">
+            <div class="card mb-4 box-shadow">
+                <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+                <div class="card-header">
+                    <h4 class="my-0 font-weight-normal">{{ product.name }}</h4>
+                </div>
+                <div class="card-body">
+                    
+                    <ul class="list-unstyled mt-1 mb-4 text-start m-1">
+                        <li>Категория: {{ product.category }}</li>
+                        <li>Дата обновления: {{ product.updated_at }}</li>
+                        <li>Описание : {{ product.description }}</li>
+                    </ul>
+                    <h1 class="card-title pricing-card-title mb-3">{{ product.price }} руб.</h1>
+                    <button type="button" class="btn btn-outline-primary btn-lg">Купить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

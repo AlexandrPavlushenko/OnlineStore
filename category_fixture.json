@@ -3,24 +3,24 @@
     "model": "catalog.category",
     "pk": 1,
     "fields": {
-        "name": "Процессоры",
-        "description": null
+        "name": "Овощи",
+        "description": ""
     }
 },
 {
     "model": "catalog.category",
     "pk": 2,
     "fields": {
-        "name": "Материнские платы",
-        "description": null
+        "name": "Фрукты",
+        "description": ""
     }
 },
 {
     "model": "catalog.category",
     "pk": 3,
     "fields": {
-        "name": "Видеокарты",
-        "description": null
+        "name": "Ягоды",
+        "description": ""
     }
 }
 ]
