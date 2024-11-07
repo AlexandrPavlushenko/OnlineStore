@@ -16,8 +16,8 @@
                     
                     <ul class="list-unstyled mt-1 mb-4 text-start m-1">
                         <li>Категория: {{ product.category }}</li>
-                        <li>Дата обновления: {{ product.updated_at }}</li>
-                        <li>Описание : {{ product.description }}</li>
+                        <li>Дата обновления: {{ product.updated_at|date:"d.m.Y"}}</li>
+                        <li>Описание : {{ product.description|truncatechars:100|default:"отсутствует" }}</li>
                     </ul>
                     <h1 class="card-title pricing-card-title mb-3">{{ product.price }} руб.</h1>
                     <button type="button" class="btn btn-outline-primary btn-lg">Купить</button>

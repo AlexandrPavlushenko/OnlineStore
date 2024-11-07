@@ -21,7 +21,8 @@
                         </div>
                         <div class="card-body">
                             <h1 class="card-title pricing-card-title">{{ product.price }} руб.</h1>
-                            <ul class="list-unstyled mt-3 mb-4 text-start m-3">
+                            <ul class="list-unstyled mt-1 mb-4 text-start m-1">
+                                <li>Описание: {{ product.description|truncatechars:100|default:"отсутствует" }}</li>
                             </ul>
                             <a class="btn btn-outline-primary btn-lg"
                                href="{% url 'catalog:product_details' product.pk %}" role="button">Просмотр</a>
