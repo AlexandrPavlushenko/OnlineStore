@@ -21,12 +21,13 @@
 
                             <div class="mb-3">
                                 <label for="description">Описание</label>
-                                <textarea name="description" class="form-control" id="description" rows="4" required></textarea>
+                                <textarea name="description" class="form-control" id="description" rows="4"></textarea>
                             </div>
 
                             <div class="mb-3">
                                 <label for="image">Изображение</label>
-                                <input type="file" name="image" class="form-control" id="image" accept="image/*" required>
+                                <input type="file" name="image" class="form-control" id="image" accept="image/*"
+                                       required>
                             </div>
 
                             <div class="mb-3">
@@ -37,17 +38,29 @@
                                         <option value="{{ category.id }}">{{ category.name }}</option>
                                     {% endfor %}
                                 </select>
-                                <button type="button" class="btn btn-link" data-bs-toggle="modal" data-bs-target="#newCategoryModal">
+                                <button type="button" class="btn btn-link" data-bs-toggle="modal"
+                                        data-bs-target="#newCategoryModal">
                                     Добавить новую категорию
                                 </button>
                             </div>
 
                             <div class="mb-3">
                                 <label for="price">Цена (руб.)</label>
-                                <input type="number" name="price" class="form-control" id="price" min="0" step="0.1" required>
+                                <input type="number" name="price" class="form-control" id="price" min="0" step="0.1"
+                                       required>
                             </div>
 
                             <button type="submit" class="btn btn-lg btn-block btn-outline-primary">Добавить</button>
+                            {% if messages %}
+                                <ul class="messages">
+                                    {% for message in messages %}
+                                        <li
+                                                {% if message.tags %} class="{{ message.tags }} m-1{% if message.tags == 'error' %} text-danger{% elif message.tags == 'success' %} text-success{% endif %}{% endif %}">
+                                            {{ message }}
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
                         </form>
                     </div>
                 </div>
@@ -56,7 +69,8 @@
     </div>
 
     <!-- Модальное окно для создания новой категории -->
-    <div class="modal fade" id="newCategoryModal" tabindex="-1" aria-labelledby="newCategoryModalLabel" aria-hidden="true">
+    <div class="modal fade" id="newCategoryModal" tabindex="-1" aria-labelledby="newCategoryModalLabel"
+         aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -68,12 +82,14 @@
                         {% csrf_token %}
                         <div class="mb-3">
                             <label for="new_category_name" class="form-label">Наименование категории</label>
-                            <input type="text" name="new_category_name" class="form-control" id="new_category_name" required>
+                            <input type="text" name="new_category_name" class="form-control" id="new_category_name"
+                                   required>
                         </div>
 
                         <div class="mb-3">
                             <label for="description_category">Описание</label>
-                            <textarea name="description_category" class="form-control" id="description_category" rows="4" required></textarea>
+                            <textarea name="description_category" class="form-control" id="description_category"
+                                      rows="4" required></textarea>
                         </div>
                     </form>
                 </div>
@@ -85,67 +101,67 @@
         </div>
     </div>
 
-   <script>
-    // Массив для хранения текущих названий категорий
-    const existingCategories = new Set();
-    
-    // Получаем текущие категории из выпадающего списка
-    document.querySelectorAll('#category option').forEach(option => {
-        existingCategories.add(option.text.trim().toLowerCase());
-    });
+    <script>
+        // Массив для хранения текущих названий категорий
+        const existingCategories = new Set();
 
-    document.getElementById('addCategoryButton').addEventListener('click', function() {
-        let categoryName = document.getElementById('new_category_name').value.trim();
-        let description = document.getElementById('description_category').value.trim();
+        // Получаем текущие категории из выпадающего списка
+        document.querySelectorAll('#category option').forEach(option => {
+            existingCategories.add(option.text.trim().toLowerCase());
+        });
 
-        // Проверяем, если категория с таким именем уже существует
-        if (categoryName && !existingCategories.has(categoryName.toLowerCase())) {
-            // Отправляем AJAX-запрос на сервер
-            fetch('{% url "catalog:add_category" %}', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'X-CSRFToken': '{{ csrf_token }}'
-                },
-                body: new URLSearchParams({
-                    'new_category_name': categoryName,
-                    'description_category': description,
-                }),
-            })
-            .then(response => {
-                if (response.ok) {
-                    return response.json();
-                }
-                throw new Error('Ошибка при добавлении категории');
-            })
-            .then(data => {
-                // Создаем новый option элемент для новой категории
-                let newOption = document.createElement("option");
-                newOption.value = data.id; // Используем id категории из ответа
-                newOption.text = data.name; // Имя категории
-                newOption.selected = true; // Чтобы новосозданная категория была выбрана
+        document.getElementById('addCategoryButton').addEventListener('click', function () {
+            let categoryName = document.getElementById('new_category_name').value.trim();
+            let description = document.getElementById('description_category').value.trim();
 
-                let categorySelect = document.getElementById('category');
-                categorySelect.appendChild(newOption);
+            // Проверяем, если категория с таким именем уже существует
+            if (categoryName && !existingCategories.has(categoryName.toLowerCase())) {
+                // Отправляем AJAX-запрос на сервер
+                fetch('{% url "catalog:add_category" %}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: new URLSearchParams({
+                        'new_category_name': categoryName,
+                        'description_category': description,
+                    }),
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            return response.json();
+                        }
+                        throw new Error('Ошибка при добавлении категории');
+                    })
+                    .then(data => {
+                        // Создаем новый option элемент для новой категории
+                        let newOption = document.createElement("option");
+                        newOption.value = data.id; // Используем id категории из ответа
+                        newOption.text = data.name; // Имя категории
+                        newOption.selected = true; // Чтобы новосозданная категория была выбрана
 
-                // Добавляем новое имя категории в список существующих категорий
-                existingCategories.add(newOption.text.trim().toLowerCase());
-                
-                // Очищаем поля ввода модального окна
-                document.getElementById('new_category_name').value = '';
-                document.getElementById('description_category').value = '';
-                
-                // Закрываем модальное окно
-                let modal = bootstrap.Modal.getInstance(document.getElementById('newCategoryModal'));
-                modal.hide();
-            })
-            .catch(error => {
-                console.error(error);
-                alert('Не удалось добавить категорию.');
-            });
-        } else {
-            alert('Категория с таким названием уже существует.');
-        }
-    });
-</script>
+                        let categorySelect = document.getElementById('category');
+                        categorySelect.appendChild(newOption);
+
+                        // Добавляем новое имя категории в список существующих категорий
+                        existingCategories.add(newOption.text.trim().toLowerCase());
+
+                        // Очищаем поля ввода модального окна
+                        document.getElementById('new_category_name').value = '';
+                        document.getElementById('description_category').value = '';
+
+                        // Закрываем модальное окно
+                        let modal = bootstrap.Modal.getInstance(document.getElementById('newCategoryModal'));
+                        modal.hide();
+                    })
+                    .catch(error => {
+                        console.error(error);
+                        alert('Не удалось добавить категорию.');
+                    });
+            } else {
+                alert('Категория с таким названием уже существует.');
+            }
+        });
+    </script>
 {% endblock %}

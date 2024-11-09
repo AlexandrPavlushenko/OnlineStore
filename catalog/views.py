@@ -1,8 +1,8 @@
 from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.core.paginator import Paginator
 from catalog.models import Product, Category
-from django.http import JsonResponse
+from django.contrib import messages
 
 
 def home(request):
@@ -36,6 +36,30 @@ def product_details(request, pk):
 def add_product(request):
     category_list = Category.objects.all()
     context = {"title": "Добавление товара", "category_list": category_list}
+
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        description = request.POST.get('description')
+        image = request.FILES.get('image')
+        category_id = request.POST.get('category')
+        price = request.POST.get('price')
+
+        if Product.objects.filter(name=name).exists():
+            messages.error(request, " Товар с таким именем уже существует.")
+
+        else:
+            category = Category.objects.get(id=category_id)
+            product = Product(
+                name=name,
+                description=description,
+                image=image,
+                category=category,
+                price=price
+            )
+            product.save()
+
+            messages.success(request, " Товар успешно добавлен!")
+
     return render(request, 'add_product.html', context)
 
 
