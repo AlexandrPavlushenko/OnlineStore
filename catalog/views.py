@@ -1,7 +1,8 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
 from django.core.paginator import Paginator
-from catalog.models import Product
+from catalog.models import Product, Category
+from django.http import JsonResponse
 
 
 def home(request):
@@ -31,3 +32,23 @@ def product_details(request, pk):
     context = {"product": product, "title": f"Товар №{pk}"}
     return render(request, 'product_details.html', context)
 
+
+def add_product(request):
+    category_list = Category.objects.all()
+    context = {"title": "Добавление товара", "category_list": category_list}
+    return render(request, 'add_product.html', context)
+
+
+def add_category(request):
+    if request.method == 'POST':
+        category_name = request.POST.get('new_category_name')
+        description = request.POST.get('description_category')
+
+        if category_name:
+            category, created = Category.objects.update_or_create(
+                name=category_name,
+                defaults={'description': description}
+            )
+            return JsonResponse({'id': category.id, 'name': category.name, 'created': created})
+
+    return JsonResponse({'error': 'Invalid data'}, status=400)

@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="pricing-header px-3 py-3 pt-md-3 pb-md-4 mx-auto text-center">
+        <h1 class="display-4">Добавление товара</h1>
+    </div>
+
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-md-10 col-sm-12">
+                <div class="card mb-4 box-shadow">
+                    <div class="card-header">
+                        <h4 class="my-0 font-weight-normal">Заполните карточку товара</h4>
+                    </div>
+                    <div class="card-body">
+                        <form method="post" action="" enctype="multipart/form-data" class="form-floating">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label for="name">Наименование</label>
+                                <input type="text" name="name" class="form-control" id="name" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="description">Описание</label>
+                                <textarea name="description" class="form-control" id="description" rows="4" required></textarea>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="image">Изображение</label>
+                                <input type="file" name="image" class="form-control" id="image" accept="image/*" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="category">Категория</label>
+                                <select name="category" class="form-select" id="category" required>
+                                    <option value="" disabled selected>----------</option>
+                                    {% for category in category_list %}
+                                        <option value="{{ category.id }}">{{ category.name }}</option>
+                                    {% endfor %}
+                                </select>
+                                <button type="button" class="btn btn-link" data-bs-toggle="modal" data-bs-target="#newCategoryModal">
+                                    Добавить новую категорию
+                                </button>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="price">Цена (руб.)</label>
+                                <input type="number" name="price" class="form-control" id="price" min="0" step="0.1" required>
+                            </div>
+
+                            <button type="submit" class="btn btn-lg btn-block btn-outline-primary">Добавить</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно для создания новой категории -->
+    <div class="modal fade" id="newCategoryModal" tabindex="-1" aria-labelledby="newCategoryModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Добавление новой категории</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="newCategoryForm" onsubmit="return false;">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="new_category_name" class="form-label">Наименование категории</label>
+                            <input type="text" name="new_category_name" class="form-control" id="new_category_name" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="description_category">Описание</label>
+                            <textarea name="description_category" class="form-control" id="description_category" rows="4" required></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                    <button type="button" class="btn btn-primary" id="addCategoryButton">Добавить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+   <script>
+    // Массив для хранения текущих названий категорий
+    const existingCategories = new Set();
+    
+    // Получаем текущие категории из выпадающего списка
+    document.querySelectorAll('#category option').forEach(option => {
+        existingCategories.add(option.text.trim().toLowerCase());
+    });
+
+    document.getElementById('addCategoryButton').addEventListener('click', function() {
+        let categoryName = document.getElementById('new_category_name').value.trim();
+        let description = document.getElementById('description_category').value.trim();
+
+        // Проверяем, если категория с таким именем уже существует
+        if (categoryName && !existingCategories.has(categoryName.toLowerCase())) {
+            // Отправляем AJAX-запрос на сервер
+            fetch('{% url "catalog:add_category" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: new URLSearchParams({
+                    'new_category_name': categoryName,
+                    'description_category': description,
+                }),
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw new Error('Ошибка при добавлении категории');
+            })
+            .then(data => {
+                // Создаем новый option элемент для новой категории
+                let newOption = document.createElement("option");
+                newOption.value = data.id; // Используем id категории из ответа
+                newOption.text = data.name; // Имя категории
+                newOption.selected = true; // Чтобы новосозданная категория была выбрана
+
+                let categorySelect = document.getElementById('category');
+                categorySelect.appendChild(newOption);
+
+                // Добавляем новое имя категории в список существующих категорий
+                existingCategories.add(newOption.text.trim().toLowerCase());
+                
+                // Очищаем поля ввода модального окна
+                document.getElementById('new_category_name').value = '';
+                document.getElementById('description_category').value = '';
+                
+                // Закрываем модальное окно
+                let modal = bootstrap.Modal.getInstance(document.getElementById('newCategoryModal'));
+                modal.hide();
+            })
+            .catch(error => {
+                console.error(error);
+                alert('Не удалось добавить категорию.');
+            });
+        } else {
+            alert('Категория с таким названием уже существует.');
+        }
+    });
+</script>
+{% endblock %}
