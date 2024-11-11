@@ -13,9 +13,19 @@ https://github.com/AlexandrPavlushenko/OnlineStore.git
 ```
 
 2. Установите зависимости:
+
 ```
 pip install -r requirements.txt
 ```
 
+3. Создайте и заполните данными файл <b>.env</b> по шаблону <b>.env.sample</b>, который находится в корне проекта
+
+4. Загрузите данные в свою БД из файлов-фикстур, командами:
+
+```
+   python manage.py loaddata category_fixture.json --format json
+   python manage.py loaddata product_fixture.json --format json
+```
 ## Использование:
+
 В терминале введите команду запуска сервера: <b><i>python manage.py runserver</i></b>
