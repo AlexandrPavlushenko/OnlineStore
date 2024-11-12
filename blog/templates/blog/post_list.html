@@ -1,0 +1,30 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Список постов</title>
+    <link href="{% static "css/bootstrap.min.css" %}" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-4">
+    <h1>Список постов</h1>
+    <a href="{% url 'blog:post_create' %}" class="btn btn-primary mb-3">Создать новый пост</a>
+    <div class="list-group">
+        {% for post in posts %}
+        <a href="{% url 'blog:post_detail' post.pk %}" class="list-group-item list-group-item-action">
+            <h5 class="mb-1">{{ post.title }}</h5>
+            <small>Создан: {{ post.created_at }}</small>
+            <p class="mb-1">{{ post.content|truncatewords:20 }}</p>
+            <small>Просмотров: {{ post.views_count }}</small>
+        </a>
+        {% empty %}
+        <div class="alert alert-warning">Посты отсутствуют.</div>
+        {% endfor %}
+    </div>
+</div>
+
+<script src="{% static "js/bootstrap.bundle.min.js" %}"></script>
+</body>
+</html>

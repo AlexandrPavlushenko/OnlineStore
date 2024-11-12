@@ -2,32 +2,43 @@ from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
 from django.core.paginator import Paginator
 from catalog.models import Product
+from django.views.generic import ListView, View
 
 
-def home(request):
-    products_list = Product.objects.all()
-    page_number = request.GET.get('page', 1)
-    paginator = Paginator(products_list, 3)
-    page_obj = paginator.get_page(page_number)
-    context = {
-        "page_obj": page_obj,
-        "is_paginated": paginator.num_pages > 1,
-        "title": "Каталог"
-    }
-    return render(request, 'home.html', context)
+class HomeView(ListView):
+    model = Product
+    template_name = 'home.html'
+    context_object_name = 'page_obj'
+    paginate_by = 3
+    title = "Каталог"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.paginate_by:
+            paginator = context['paginator']
+            context['is_paginated'] = paginator.num_pages > 1
+        context['title'] = self.title
+        return context
 
 
-def contacts(request):
-    context = {"title": "Контакты"}
-    if request.method == 'POST':
+class ContactsView(View):
+    template_name = 'contacts.html'
+    title = "Контакты"
+
+    def get(self, request):
+        context = {"title": self.title}
+        return render(request, self.template_name, context)
+
+    def post(self, request):
         name = request.POST.get('name')
         message = request.POST.get('message')
         return HttpResponse(f"Спасибо, {name}! Ваше сообщение получено.")
-    return render(request, 'contacts.html', context)
 
 
-def product_details(request, pk):
-    product = get_object_or_404(Product, pk=pk)
-    context = {"product": product, "title": f"Товар №{pk}"}
-    return render(request, 'product_details.html', context)
+class ProductDetailsView(View):
+    template_name = 'product_details.html'
 
+    def get(self, request, pk):
+        product = get_object_or_404(Product, pk=pk)
+        context = {"product": product, "title": f"Товар №{pk}"}
+        return render(request, self.template_name, context)
