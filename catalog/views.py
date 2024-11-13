@@ -8,7 +8,6 @@ from django.views.generic import ListView, View
 class HomeView(ListView):
     model = Product
     template_name = 'home.html'
-    context_object_name = 'page_obj'
     paginate_by = 3
     title = "Каталог"
 
