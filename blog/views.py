@@ -1,53 +1,63 @@
-from django.views import View
-from django.shortcuts import render, redirect, get_object_or_404
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from .models import BlogPost
-from .forms import BlogPostForm
+from django.urls import reverse_lazy
 
 
-class BlogPostListView(View):
-    def get(self, request):
-        posts = BlogPost.objects.filter(is_published=True)
-        return render(request, 'blog/post_list.html', {'posts': posts, 'title': 'Список постов'})
+class BlogPostListView(ListView):
+    model = BlogPost
+    template_name = 'blog/post_list.html'
+    context_object_name = 'posts'
+    queryset = BlogPost.objects.filter(is_published=True)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = f'Список постов'
+        return context
 
 
-class BlogPostDetailView(View):
-    def get(self, request, pk):
-        post = get_object_or_404(BlogPost, pk=pk)
+class BlogPostDetailView(DetailView):
+    model = BlogPost
+    template_name = 'blog/post_detail.html'
+    context_object_name = 'post'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = f'Пост #{self.object.pk}'
+        return context
+
+    def get(self, request, *args, **kwargs):
+        post = self.get_object()
         post.views_count += 1
         post.save()
-        return render(request, 'blog/post_detail.html', {'post': post, 'title': f'Пост #{pk}'})
+        return super().get(request, *args, **kwargs)
 
 
-class BlogPostCreateView(View):
-    def get(self, request):
-        form = BlogPostForm()
-        return render(request, 'blog/post_form.html', {'form': form, 'title': 'Создать пост'})
+class BlogPostCreateView(CreateView):
+    model = BlogPost
+    fields = ['title', 'content', 'preview_image', 'is_published']
+    template_name = 'blog/post_form.html'
+    success_url = reverse_lazy('blog:post_list')
 
-    def post(self, request):
-        form = BlogPostForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-            return redirect('blog:post_list')  # Перенаправление на список постов
-        return render(request, 'blog/post_form.html', {'form': form})
-
-
-class BlogPostUpdateView(View):
-    def get(self, request, pk):
-        post = get_object_or_404(BlogPost, pk=pk)
-        form = BlogPostForm(instance=post)
-        return render(request, 'blog/post_form.html', {'form': form, 'title': f'Редактировать пост #{pk}'})
-
-    def post(self, request, pk):
-        post = get_object_or_404(BlogPost, pk=pk)
-        form = BlogPostForm(request.POST, request.FILES, instance=post)
-        if form.is_valid():
-            form.save()
-            return redirect('blog:post_detail', pk=post.pk)  # Перенаправление на детальную страницу поста
-        return render(request, 'blog/post_form.html', {'form': form})
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Создать пост'
+        return context
 
 
-class BlogPostDeleteView(View):
-    def get(self, request, pk):
-        post = get_object_or_404(BlogPost, pk=pk)
-        post.delete()
-        return redirect('blog:post_list')  # Перенаправление на список постов
+class BlogPostUpdateView(UpdateView):
+    model = BlogPost
+    fields = ['title', 'content', 'preview_image', 'is_published']
+    template_name = 'blog/post_form.html'
+    success_url = reverse_lazy('blog:post_list')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = f'Редактировать пост #{self.object.pk}'
+        return context
+
+
+class BlogPostDeleteView(DeleteView):
+    model = BlogPost
+    success_url = reverse_lazy('blog:post_list')
+
+
