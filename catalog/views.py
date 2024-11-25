@@ -1,8 +1,7 @@
-from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponse
 from catalog.models import Product
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView, View
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, FormView
 from django.urls import reverse_lazy
+from .forms import ProductForm, ContactForm
 
 class HomeView(ListView):
     model = Product
@@ -17,56 +16,35 @@ class HomeView(ListView):
         return context
 
 
+class ProductDetailsView(DetailView):
+    model = Product
+    template_name = 'product_details.html'
+
+
 class ProductCreateView(CreateView):
     model = Product
-    fields = ['name', 'price', 'description', 'category', 'image']
+    form_class = ProductForm
     template_name = 'product_form.html'
     success_url = reverse_lazy('catalog:home')
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['product'] = None  # Не существует объекта продукта при создании
-        return context
 
 class ProductUpdateView(UpdateView):
     model = Product
-    fields = ['name', 'price', 'description', 'category', 'image']
+    form_class = ProductForm
     template_name = 'product_form.html'
     success_url = reverse_lazy('catalog:home')
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['product'] = self.object  # Передаём объект продукта в контекст
-        return context
 
 
 class ProductDeleteView(DeleteView):
     model = Product
-    template_name = 'product_delete.html'  # Шаблон для подтверждения удаления
-    success_url = reverse_lazy('catalog:home')  # Куда перенаправить после успешного удаления
+    template_name = 'product_delete.html'
+    success_url = reverse_lazy('catalog:home')
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['product'] = self.object  # Передаём объект продукта в контекст
-        return context
 
-class ContactsView(View):
+class ContactsView(FormView):
     template_name = 'contacts.html'
+    form_class = ContactForm
+    success_url = reverse_lazy('catalog:home')
 
-    def get(self, request):
-        context = {"title": 'Контакты'}
-        return render(request, self.template_name, context)
-
-    def post(self, request):
-        name = request.POST.get('name')
-        message = request.POST.get('message')
-        return HttpResponse(f"Спасибо, {name}! Ваше сообщение получено.")
-
-
-class ProductDetailsView(View):
-    template_name = 'product_details.html'
-
-    def get(self, request, pk):
-        product = get_object_or_404(Product, pk=pk)
-        return render(request, self.template_name, {'product': product})
-
+    def form_valid(self, form):
+        return super().form_valid(form)

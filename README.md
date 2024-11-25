@@ -20,7 +20,12 @@ pip install -r requirements.txt
 
 3. Создайте и заполните данными файл <b>.env</b> по шаблону <b>.env.sample</b>, который находится в корне проекта
 
-4. Загрузите данные в свою БД из файлов-фикстур, командами:
+4. Выполните миграции в БД
+```
+python manage.py migrate
+```
+
+5.Заполните данными  БД из файлов-фикстур, командами:
 
 ```
    python manage.py loaddata category_fixture.json --format json
