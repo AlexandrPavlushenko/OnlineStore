@@ -1,8 +1,8 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
 from catalog.models import Product
-from django.views.generic import ListView, View
-
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView, View
+from django.urls import reverse_lazy
 
 class HomeView(ListView):
     model = Product
@@ -14,9 +14,41 @@ class HomeView(ListView):
         if self.paginate_by:
             paginator = context['paginator']
             context['is_paginated'] = paginator.num_pages > 1
-        context['title'] = 'Каталог'
         return context
 
+
+class ProductCreateView(CreateView):
+    model = Product
+    fields = ['name', 'price', 'description', 'category', 'image']
+    template_name = 'product_form.html'
+    success_url = reverse_lazy('catalog:home')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['product'] = None  # Не существует объекта продукта при создании
+        return context
+
+class ProductUpdateView(UpdateView):
+    model = Product
+    fields = ['name', 'price', 'description', 'category', 'image']
+    template_name = 'product_form.html'
+    success_url = reverse_lazy('catalog:home')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['product'] = self.object  # Передаём объект продукта в контекст
+        return context
+
+
+class ProductDeleteView(DeleteView):
+    model = Product
+    template_name = 'product_delete.html'  # Шаблон для подтверждения удаления
+    success_url = reverse_lazy('catalog:home')  # Куда перенаправить после успешного удаления
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['product'] = self.object  # Передаём объект продукта в контекст
+        return context
 
 class ContactsView(View):
     template_name = 'contacts.html'
@@ -36,5 +68,5 @@ class ProductDetailsView(View):
 
     def get(self, request, pk):
         product = get_object_or_404(Product, pk=pk)
-        context = {"product": product, "title": f"Товар №{pk}"}
-        return render(request, self.template_name, context)
+        return render(request, self.template_name, {'product': product})
+

@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% block title %}{% if form.instance.pk %}Редактировать пост{% else %}Создать пост{% endif %}{% endblock %}
 {% load static %}
 {% block content %}
     <div class="container mt-4">
