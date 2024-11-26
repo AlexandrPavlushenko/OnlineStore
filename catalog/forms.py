@@ -15,7 +15,8 @@ FORBIDDEN_WORDS = [
 class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
-        fields = ['name', 'description', 'price', 'category', 'image']
+        fields = ['name', 'description', 'price', 'category', 'image', 'is_available']
+
 
     def clean_name(self):
         name = self.cleaned_data.get('name')
@@ -48,3 +49,5 @@ class ProductForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         for field in self.fields.values():
             field.widget.attrs['class'] = 'form-control'
+        self.fields['category'].widget.attrs.update({'class': 'form-select'})
+        self.fields['is_available'].widget.attrs.update({'class': 'form-check'})

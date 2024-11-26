@@ -7,6 +7,7 @@ class HomeView(ListView):
     model = Product
     template_name = 'home.html'
     paginate_by = 3
+    queryset = Product.objects.filter(is_available=True)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
