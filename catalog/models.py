@@ -22,7 +22,7 @@ class Product(models.Model):
     price = models.IntegerField(verbose_name="Цена за покупку")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата последнего изменения")
-
+    is_available = models.BooleanField(default=True, verbose_name='Доступность в каталоге')
     def __str__(self):
         return self.name
 

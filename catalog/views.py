@@ -1,40 +1,51 @@
-from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponse
 from catalog.models import Product
-from django.views.generic import ListView, View
-
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, FormView
+from django.urls import reverse_lazy
+from .forms import ProductForm, ContactForm
 
 class HomeView(ListView):
     model = Product
     template_name = 'home.html'
     paginate_by = 3
+    queryset = Product.objects.filter(is_available=True)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         if self.paginate_by:
             paginator = context['paginator']
             context['is_paginated'] = paginator.num_pages > 1
-        context['title'] = 'Каталог'
         return context
 
 
-class ContactsView(View):
-    template_name = 'contacts.html'
-
-    def get(self, request):
-        context = {"title": 'Контакты'}
-        return render(request, self.template_name, context)
-
-    def post(self, request):
-        name = request.POST.get('name')
-        message = request.POST.get('message')
-        return HttpResponse(f"Спасибо, {name}! Ваше сообщение получено.")
-
-
-class ProductDetailsView(View):
+class ProductDetailsView(DetailView):
+    model = Product
     template_name = 'product_details.html'
 
-    def get(self, request, pk):
-        product = get_object_or_404(Product, pk=pk)
-        context = {"product": product, "title": f"Товар №{pk}"}
-        return render(request, self.template_name, context)
+
+class ProductCreateView(CreateView):
+    model = Product
+    form_class = ProductForm
+    template_name = 'product_form.html'
+    success_url = reverse_lazy('catalog:home')
+
+
+class ProductUpdateView(UpdateView):
+    model = Product
+    form_class = ProductForm
+    template_name = 'product_form.html'
+    success_url = reverse_lazy('catalog:home')
+
+
+class ProductDeleteView(DeleteView):
+    model = Product
+    template_name = 'product_delete.html'
+    success_url = reverse_lazy('catalog:home')
+
+
+class ContactsView(FormView):
+    template_name = 'contacts.html'
+    form_class = ContactForm
+    success_url = reverse_lazy('catalog:home')
+
+    def form_valid(self, form):
+        return super().form_valid(form)
