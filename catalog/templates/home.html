@@ -25,8 +25,12 @@
                             <ul class="list-unstyled mt-1 mb-4 text-start m-1">
                                 <li>Описание: {{ product.description|truncatechars:100|default:"отсутствует" }}</li>
                             </ul>
-                            <a class="btn btn-outline-primary btn-lg"
-                               href="{% url 'catalog:product_details' product.pk %}" role="button">Просмотр</a>
+                            {% if user.is_authenticated %}
+                                <a class="btn btn-outline-primary btn-lg"
+                                   href="{% url 'catalog:product_details' product.pk %}" role="button">Просмотр</a>
+                            {% else %}
+                                <span class="text-muted">Для просмотра товара необходимо <a href="{% url 'users:login' %}">войти</a>.</span>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
