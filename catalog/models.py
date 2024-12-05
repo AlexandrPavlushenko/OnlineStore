@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 
 
@@ -30,7 +31,14 @@ class Product(models.Model):
         auto_now=True, verbose_name="Дата последнего изменения"
     )
     is_available = models.BooleanField(
-        default=True, verbose_name="Доступность в каталоге"
+        default=False, verbose_name="Доступность в каталоге"
+    )
+    owner = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        verbose_name="Владелец",
+        related_name="products",
+        null=True,
     )
 
     def __str__(self):
@@ -40,3 +48,6 @@ class Product(models.Model):
         verbose_name = "Товар"
         verbose_name_plural = "Товары"
         ordering = ["name"]
+        permissions = [
+            ("can_unpublish_product", "Может отменять публикацию продукта"),
+        ]
