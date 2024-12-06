@@ -13,19 +13,25 @@
     <h5 class="my-0 mr-md-auto font-weight-normal">
         <a href="{% url 'catalog:home' %}" class="text-decoration-none">Skystore</a>
     </h5>
-    <nav class="ms-5">
-        <div class="dropdown">
-            <button class="btn btn-outline-primary dropdown-toggle" type="button" id="dropdownMenuButton"
-                    data-bs-toggle="dropdown" aria-expanded="false">
-                Меню
-            </button>
-            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <li><a class="dropdown-item" href="{% url 'catalog:home' %}">Каталог</a></li>
-                <li><a class="dropdown-item" href="{% url 'catalog:product_create' %}">Создать товар</a></li>
-                <li><a class="dropdown-item" href="{% url 'catalog:contacts' %}">Контакты</a></li>
-                <li><a class="dropdown-item" href="{% url 'blog:post_list' %}">Блог</a></li>
-            </ul>
-        </div>
+    <nav class="ms-5 d-flex align-items-center">
+        {% if user.is_authenticated %}
+            <div class="dropdown me-2">
+                <button class="btn btn-outline-primary dropdown-toggle" type="button" id="dropdownMenuButton"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                    Меню
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <li><a class="dropdown-item" href="{% url 'catalog:home' %}">Каталог</a></li>
+                    <li><a class="dropdown-item" href="{% url 'catalog:product_create' %}">Создать товар</a></li>
+                    <li><a class="dropdown-item" href="{% url 'catalog:contacts' %}">Контакты</a></li>
+                    <li><a class="dropdown-item" href="{% url 'blog:post_list' %}">Блог</a></li>
+                </ul>
+            </div>
+            <a href="{% url 'users:logout' %}" class="btn btn-outline-danger">Выход</a>
+        {% else %}
+            <a href="{% url 'users:login' %}" class="btn btn-outline-success me-2">Вход</a>
+            <a href="{% url 'users:register' %}" class="btn btn-outline-info">Регистрация</a>
+        {% endif %}
     </nav>
 </div>
 {% block content %}

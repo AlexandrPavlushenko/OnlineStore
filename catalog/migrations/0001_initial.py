@@ -8,40 +8,97 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Category',
+            name="Category",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=100, unique=True, verbose_name='Наименование')),
-                ('description', models.TextField(blank=True, null=True, verbose_name='Описание')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "name",
+                    models.CharField(
+                        max_length=100, unique=True, verbose_name="Наименование"
+                    ),
+                ),
+                (
+                    "description",
+                    models.TextField(blank=True, null=True, verbose_name="Описание"),
+                ),
             ],
             options={
-                'verbose_name': 'Категория',
-                'verbose_name_plural': 'Категории',
-                'ordering': ['name'],
+                "verbose_name": "Категория",
+                "verbose_name_plural": "Категории",
+                "ordering": ["name"],
             },
         ),
         migrations.CreateModel(
-            name='Product',
+            name="Product",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=100, unique=True, verbose_name='Наименование')),
-                ('description', models.TextField(blank=True, null=True, verbose_name='Описание')),
-                ('image', models.ImageField(upload_to='images/', verbose_name='Изображение')),
-                ('price', models.IntegerField(verbose_name='Цена за покупку')),
-                ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')),
-                ('updated_at', models.DateTimeField(auto_now=True, verbose_name='Дата последнего изменения')),
-                ('is_available', models.BooleanField(default=True, verbose_name='Доступность в каталоге')),
-                ('category', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='products', to='catalog.category', verbose_name='Категория')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "name",
+                    models.CharField(
+                        max_length=100, unique=True, verbose_name="Наименование"
+                    ),
+                ),
+                (
+                    "description",
+                    models.TextField(blank=True, null=True, verbose_name="Описание"),
+                ),
+                (
+                    "image",
+                    models.ImageField(upload_to="images/", verbose_name="Изображение"),
+                ),
+                ("price", models.IntegerField(verbose_name="Цена за покупку")),
+                (
+                    "created_at",
+                    models.DateTimeField(
+                        auto_now_add=True, verbose_name="Дата создания"
+                    ),
+                ),
+                (
+                    "updated_at",
+                    models.DateTimeField(
+                        auto_now=True, verbose_name="Дата последнего изменения"
+                    ),
+                ),
+                (
+                    "is_available",
+                    models.BooleanField(
+                        default=True, verbose_name="Доступность в каталоге"
+                    ),
+                ),
+                (
+                    "category",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="products",
+                        to="catalog.category",
+                        verbose_name="Категория",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Товар',
-                'verbose_name_plural': 'Товары',
-                'ordering': ['name'],
+                "verbose_name": "Товар",
+                "verbose_name_plural": "Товары",
+                "ordering": ["name"],
             },
         ),
     ]
