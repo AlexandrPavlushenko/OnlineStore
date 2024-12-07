@@ -1,4 +1,6 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.core.exceptions import PermissionDenied
+
 from catalog.models import Product
 from django.views.generic import (
     ListView,
@@ -9,7 +11,7 @@ from django.views.generic import (
     FormView,
 )
 from django.urls import reverse_lazy
-from .forms import ProductForm, ContactForm
+from .forms import ProductForm, ContactForm, ProductModeratorForm
 
 
 class HomeView(ListView):
@@ -37,18 +39,47 @@ class ProductCreateView(LoginRequiredMixin, CreateView):
     template_name = "product_form.html"
     success_url = reverse_lazy("catalog:home")
 
+    def form_valid(self, form):
+        form.instance.owner = self.request.user
+        return super().form_valid(form)
 
-class ProductUpdateView(LoginRequiredMixin, UpdateView):
+
+class ProductUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Product
     form_class = ProductForm
     template_name = "product_form.html"
     success_url = reverse_lazy("catalog:home")
 
+    def get_form_class(self):
+        if self.request.user.is_superuser:
+            return ProductForm
+        if self.request.user.has_perm("catalog.can_unpublish_product"):
+            return ProductModeratorForm
+        return ProductForm
 
-class ProductDeleteView(LoginRequiredMixin, DeleteView):
+    def test_func(self):
+        product = self.get_object()
+        return self.request.user == product.owner or self.request.user.has_perm(
+            "catalog.can_unpublish_product"
+        )
+
+    def handle_no_permission(self):
+        raise PermissionDenied
+
+
+class ProductDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Product
     template_name = "product_delete.html"
     success_url = reverse_lazy("catalog:home")
+
+    def test_func(self):
+        product = self.get_object()
+        return self.request.user == product.owner or self.request.user.has_perm(
+            "catalog.delete_product"
+        )
+
+    def handle_no_permission(self):
+        raise PermissionDenied
 
 
 class ContactsView(FormView):

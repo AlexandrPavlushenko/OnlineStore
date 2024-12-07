@@ -66,3 +66,15 @@ class ProductForm(forms.ModelForm):
             field.widget.attrs["class"] = "form-control"
         self.fields["category"].widget.attrs.update({"class": "form-select"})
         self.fields["is_available"].widget.attrs.update({"class": "form-check"})
+
+
+class ProductModeratorForm(forms.ModelForm):
+    class Meta:
+        model = Product
+        fields = ["is_available"]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs["class"] = "form-control"
+        self.fields["is_available"].widget.attrs.update({"class": "form-check"})
