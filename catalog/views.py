@@ -1,7 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.core.cache import cache
 from django.core.exceptions import PermissionDenied
-
-from catalog.models import Product
+from catalog.models import Product, Category
 from django.views.generic import (
     ListView,
     DetailView,
@@ -12,13 +12,22 @@ from django.views.generic import (
 )
 from django.urls import reverse_lazy
 from .forms import ProductForm, ContactForm, ProductModeratorForm
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 
 
 class HomeView(ListView):
     model = Product
     template_name = "home.html"
     paginate_by = 3
-    queryset = Product.objects.filter(is_available=True)
+
+    def get_queryset(self):
+        cache_key = 'all_available_products'
+        products = cache.get(cache_key)
+        if products is None:
+            products = Product.objects.filter(is_available=True)
+            cache.set(cache_key, products, 60 * 15)
+        return products
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -28,6 +37,7 @@ class HomeView(ListView):
         return context
 
 
+@method_decorator(cache_page(60 * 15), name='dispatch')
 class ProductDetailsView(DetailView):
     model = Product
     template_name = "product_details.html"
@@ -89,3 +99,25 @@ class ContactsView(FormView):
 
     def form_valid(self, form):
         return super().form_valid(form)
+
+
+class CategoryProductsView(ListView):
+    model = Product
+    template_name = 'category_products.html'
+    context_object_name = 'products'
+    paginate_by = 3
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        category_id = self.kwargs.get('category_id')
+        context['category'] = Category.objects.get(id=category_id)
+        if self.paginate_by:
+            paginator = context["paginator"]
+            context["is_paginated"] = paginator.num_pages > 1
+        return context
+
+    def get_queryset(self):
+        category_id = self.kwargs.get('category_id')
+        return Product.objects.filter(category_id=category_id, is_available=True)
+
+
