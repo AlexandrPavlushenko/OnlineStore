@@ -32,5 +32,5 @@ python manage.py migrate
    python manage.py loaddata product_fixture.json --format json
 ```
 ## Использование:
-
-В терминале введите команду запуска сервера: <b><i>python manage.py runserver</i></b>
+a) Запустите redis-server<br>
+б) В терминале введите команду запуска сервера: <b><i>python manage.py runserver</i></b>
